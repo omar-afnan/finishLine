@@ -1,0 +1,23 @@
+{
+  "name": "elements-finish-line",
+  "version": "1.0.0",
+  "description": "Finish Line — a race-day results suite built with Unlayer Elements. One React codebase, three render modes: email, web page, PDF certificate.",
+  "type": "module",
+  "scripts": {
+    "render": "tsx src/render.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["unlayer", "elements", "email", "react", "templates", "builtwithelements"],
+  "license": "MIT",
+  "dependencies": {
+    "@unlayer/react-elements": "^0.1.20",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
