@@ -1,13 +1,23 @@
 {
-  "name": "elements-finish-line",
+  "name": "wanderlust-booking-suite",
   "version": "1.0.0",
-  "description": "Finish Line — a race-day results suite built with Unlayer Elements. One React codebase, three render modes: email, web page, PDF certificate.",
+  "description": "WANDERLUST: a luxury travel booking confirmation suite built with Unlayer Elements. One React codebase, three render modes: email, destination page, printed itinerary.",
   "type": "module",
   "scripts": {
     "render": "tsx src/render.tsx",
+    "preview": "node scripts/serve.mjs",
+    "start": "npm run render && npm run preview",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": ["unlayer", "elements", "email", "react", "templates", "builtwithelements"],
+  "keywords": [
+    "unlayer",
+    "elements",
+    "email",
+    "react",
+    "templates",
+    "travel",
+    "builtwithelements"
+  ],
   "license": "MIT",
   "dependencies": {
     "@unlayer/react-elements": "^0.1.20",

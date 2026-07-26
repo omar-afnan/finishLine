@@ -1,76 +1,93 @@
 /**
- * Renders every template to static HTML in /output:
- * - email.html      (<Email> mode — Outlook/Gmail-safe tables)
- * - email.txt       (plain-text MIME part via renderToPlainText)
- * - page.html       (<Page> mode — responsive flexbox web page)
- * - certificate.html (<Document> mode — print/PDF-ready)
- * - *.design.json   (editor-compatible design JSON via renderToJson)
+ * Renders every template to static HTML in /output.
+ *
+ *   email.html      <Email> — table-based, client-safe
+ *   email.txt       renderToPlainText — the text/plain MIME part
+ *   page.html       <Page> — responsive web page
+ *   itinerary.html  <Document> — print-ready, opens the browser print dialog
+ *   *.design.json   renderToJson — editor-compatible design JSON
+ *
+ * renderToHtml owns the document shell and has no hook for custom CSS, so the
+ * stylesheets and the favicon are injected into <head> after the fact.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { renderToHtml, renderToPlainText, renderToJson } from "@unlayer/react-elements";
-import ResultsEmail from "./templates/ResultsEmail";
-import ResultsPage from "./templates/ResultsPage";
-import FinisherCertificate from "./templates/FinisherCertificate";
-import { raceData } from "./lib/data";
+import BookingEmail from "./templates/BookingEmail";
+import DestinationPage from "./templates/DestinationPage";
+import ItineraryDocument from "./templates/ItineraryDocument";
+import { brand, booking, trip } from "./lib/data";
 import { fonts } from "./lib/theme";
+import { pageCss, documentCss, printBar } from "./styles";
 
 const outDir = path.join(process.cwd(), "output");
 fs.mkdirSync(outDir, { recursive: true });
 
 const fontsOption = [{ url: fonts.googleFontsUrl }];
-const { event, runner } = raceData;
 
-// Self-contained favicon: embed the SVG as a data URI so each HTML file
-// stays standalone (renderToHtml has no favicon option, so we inject it).
+// Self-contained favicon: the SVG is embedded as a data URI so each HTML file
+// stays standalone.
 const faviconSvg = fs.readFileSync(path.join(process.cwd(), "assets", "favicon.svg"), "utf8");
 const faviconLink = `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,${encodeURIComponent(
   faviconSvg
 )}" />`;
 
-function withFavicon(html: string): string {
-  return html.includes("</head>")
-    ? html.replace("</head>", `${faviconLink}</head>`)
-    : html.replace("<head>", `<head>${faviconLink}`);
+/** Injects the favicon and, when given, a stylesheet into <head>. */
+function injectHead(html: string, css?: string): string {
+  const head = faviconLink + (css ? `<style>${css}</style>` : "");
+  return html.includes("</head>") ? html.replace("</head>", `${head}</head>`) : html.replace("<head>", `<head>${head}`);
 }
 
-const targets = [
+/** Wraps the document body in the print sheet and prepends the print control. */
+function wrapDocument(html: string): string {
+  return html
+    .replace(/(<body[^>]*>)/i, `$1${printBar}<div class="wl-sheet">`)
+    .replace(/(<\/body>)/i, `</div>$1`);
+}
+
+interface Target {
+  name: string;
+  element: React.ReactElement;
+  title: string;
+  css?: string;
+  transform?: (html: string) => string;
+}
+
+const targets: Target[] = [
   {
     name: "email",
-    element: <ResultsEmail />,
-    title: `Your official ${event.name} result`,
-    mode: "email" as const,
+    element: <BookingEmail />,
+    title: `${trip.destination} is confirmed · ${booking.reference}`,
   },
   {
     name: "page",
-    element: <ResultsPage />,
-    title: `${runner.firstName} ${runner.lastName} — ${event.name} Results`,
-    mode: "web" as const,
+    element: <DestinationPage />,
+    title: `${trip.destination} · ${trip.dates} · ${brand.name}`,
+    css: pageCss,
   },
   {
-    name: "certificate",
-    element: <FinisherCertificate />,
-    title: `${event.name} — Finisher Certificate`,
-    mode: "document" as const,
+    name: "itinerary",
+    element: <ItineraryDocument />,
+    title: `Travel itinerary ${booking.reference} · ${brand.name}`,
+    css: documentCss,
+    transform: wrapDocument,
   },
 ];
 
 for (const t of targets) {
-  const html = withFavicon(renderToHtml(t.element, { title: t.title, fonts: fontsOption }));
+  let html = renderToHtml(t.element, { title: t.title, fonts: fontsOption });
+  html = injectHead(html, t.css);
+  if (t.transform) html = t.transform(html);
   fs.writeFileSync(path.join(outDir, `${t.name}.html`), html, "utf8");
 
   const design = renderToJson(t.element);
-  fs.writeFileSync(
-    path.join(outDir, `${t.name}.design.json`),
-    JSON.stringify(design, null, 2),
-    "utf8"
-  );
-  console.log(`  ✔ output/${t.name}.html  (+ ${t.name}.design.json)`);
+  fs.writeFileSync(path.join(outDir, `${t.name}.design.json`), JSON.stringify(design, null, 2), "utf8");
+  console.log(`  ok  output/${t.name}.html  (+ ${t.name}.design.json)`);
 }
 
-// Plain-text MIME part for the email — critical for deliverability.
-const text = renderToPlainText(<ResultsEmail />);
-fs.writeFileSync(path.join(outDir, "email.txt"), text, "utf8");
-console.log("  ✔ output/email.txt");
+// Plain-text MIME part for the email. Real ESPs expect it and deliverability
+// suffers without it.
+fs.writeFileSync(path.join(outDir, "email.txt"), renderToPlainText(<BookingEmail />), "utf8");
+console.log("  ok  output/email.txt");
 
-console.log("\n✅ All templates rendered from one shared data source.");
+console.log("\nAll templates rendered from one shared data source.");
