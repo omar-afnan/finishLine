@@ -388,19 +388,177 @@ export const navLinks = [
   { text: "About", href: "#about" },
 ] as const;
 
+/**
+ * Links. The three standalone pages and the PDF are rendered into the same
+ * folder as everything else, so relative hrefs resolve from the email, the
+ * page and the document alike. A real send would swap in absolute URLs on
+ * `brand.websiteUrl`; the app-side routes below stay absolute because they
+ * live in a product this suite only links out to.
+ */
 export const links = {
   itinerary: `${brand.websiteUrl}/trips/${booking.reference}`,
-  /**
-   * The generated PDF sits next to the other deliverables, so a relative
-   * href works from the email, the page and the document alike. A real send
-   * would swap in an absolute CDN URL; `npm run pdf` writes the file.
-   */
   pdf: "itinerary.pdf",
   myTrips: `${brand.websiteUrl}/my-trips`,
-  unsubscribe: `${brand.websiteUrl}/preferences`,
-  privacy: `${brand.websiteUrl}/privacy`,
-  terms: `${brand.websiteUrl}/terms`,
-  contact: `${brand.websiteUrl}/contact`,
+  home: "/",
+  destination: "page.html",
+  contact: "contact.html",
+  privacy: "privacy.html",
+  terms: "terms.html",
+  /** Preference centre lives with the concierge, who handles the request. */
+  unsubscribe: "contact.html#concierge",
+} as const;
+
+/**
+ * The contact page: an index of the standalone pages plus the ways to reach a
+ * human. Copy lives here so the template stays presentational.
+ */
+export const contactContent = {
+  eyebrow: brand.name,
+  title: "Mindful exploration, crafted for you.",
+  lede: "Explore the pages below to review our policies and reach our concierge team.",
+  cards: [
+    {
+      eyebrow: "Legal",
+      title: "Privacy Policy",
+      body: "How we collect, use, and protect your travel data.",
+      href: links.privacy,
+    },
+    {
+      eyebrow: "Legal",
+      title: "Terms of Service",
+      body: "Booking policies, cancellation terms, and traveler responsibilities.",
+      href: links.terms,
+    },
+    {
+      eyebrow: "We're here for you",
+      title: "Concierge & Support",
+      body: "On call 24 hours a day, 7 days a week to ensure your journey is seamless.",
+      href: "#concierge",
+    },
+  ],
+  channels: [
+    {
+      icon: "phone",
+      title: "Global concierge desk",
+      body: `Call ${brand.supportPhone} at any hour. Immediate help with active bookings, flight changes and urgent requests.`,
+    },
+    {
+      icon: "mail",
+      title: "Email concierge",
+      body: `Write to ${brand.supportEmail}. Travellers on an active itinerary hear back in under 15 minutes.`,
+    },
+    {
+      icon: "mapPin",
+      title: "Local Tokyo partner",
+      body: "On the ground in Minato on +81 3-5400-1111, for transfers, reservations and translation.",
+    },
+  ],
+  helpTitle: "How we help",
+  help: "Adjusting a private dining reservation, adding Shinkansen tickets, arranging a late checkout: your coordinator handles it directly with our local partners, so you never chase a supplier yourself.",
+  office: `${brand.legalName}, ${brand.city}. Serving curated travel worldwide since ${brand.established}.`,
+} as const;
+
+/**
+ * The two legal pages. Same shape, so one template renders both: an intro,
+ * then numbered sections that double as the anchor list down the side.
+ */
+export const legalPages = {
+  privacy: {
+    eyebrow: "Legal",
+    title: "Privacy Policy",
+    lede: "How we collect, use, and protect your travel data.",
+    updated: "Last updated July 1, 2026",
+    sections: [
+      {
+        id: "what-we-collect",
+        heading: "What we collect",
+        body: [
+          `${brand.legalName} collects only what a journey needs: your name as it appears on your passport, contact details, payment confirmation, and the preferences you choose to share, such as dietary requirements or a seat you favour.`,
+          "We do not ask for passport scans by email. Documents that a supplier genuinely requires are collected through a secure upload link that expires once the booking is issued.",
+        ],
+      },
+      {
+        id: "how-we-use-it",
+        heading: "How we use it",
+        body: [
+          "Your details are used to issue tickets, hold reservations, arrange transfers, and send the confirmations and itinerary updates for the trip you booked.",
+          "We write to you about a booking you hold, and separately about new expeditions only if you asked for that. The two are never bundled: leaving the newsletter never affects the messages that matter to a live trip.",
+        ],
+      },
+      {
+        id: "who-sees-it",
+        heading: "Who sees it",
+        body: [
+          "Only the partners carrying out your trip: the airline, the hotel, the guide, the driver. Each receives the minimum needed to do their part, and nothing more.",
+          "We do not sell personal data, we do not trade it, and we do not hand it to advertisers. Where a supplier sits outside your home country, the transfer is covered by a written data agreement.",
+        ],
+      },
+      {
+        id: "how-long",
+        heading: "How long we keep it",
+        body: [
+          "Booking records are kept for seven years, because tax and consumer-protection rules require it. Preferences and marketing consent are kept until you change them.",
+          "Payment card numbers never reach our systems. Our processor holds them, and we store only the reference needed to match a payment to a booking.",
+        ],
+      },
+      {
+        id: "your-rights",
+        heading: "Your rights",
+        body: [
+          `You can ask for a copy of what we hold, correct anything wrong, withdraw consent, or ask us to delete what we are not legally required to keep. Write to ${brand.supportEmail} and we answer within 30 days.`,
+          "If our answer does not satisfy you, you may take the matter to your local data protection authority. We would rather you told us first, and we will treat it as a fault of ours to fix.",
+        ],
+      },
+    ],
+  },
+  terms: {
+    eyebrow: "Legal",
+    title: "Terms of Service",
+    lede: "Booking policies, cancellation terms, and traveler responsibilities.",
+    updated: "Last updated July 1, 2026",
+    sections: [
+      {
+        id: "booking",
+        heading: "Booking and payment",
+        body: [
+          `A journey is confirmed when payment clears and a booking reference is issued. Until then, quoted fares, room rates and experience slots are held but not guaranteed.`,
+          "Prices are shown in US dollars and include the taxes and fees listed on your confirmation. Anything optional, such as a spa treatment settled at the property, is named as such rather than buried in a total.",
+        ],
+      },
+      {
+        id: "changes",
+        heading: "Changes to your trip",
+        body: [
+          "Tell us what you need and we will re-arrange what can be re-arranged. Some elements, such as a non-refundable fare or a chef's table with a fixed seating, carry a supplier charge we will always quote before acting on it.",
+          "We never change a confirmed itinerary without telling you. If a supplier forces a change, you hear it from your coordinator, along with the alternatives.",
+        ],
+      },
+      {
+        id: "cancellation",
+        heading: "Cancellation and refunds",
+        body: [
+          "Cancel more than 48 hours before departure and the trip is refundable less a 5% administrative fee. Inside 48 hours, the airline and hotel policies on your confirmation govern what can be returned.",
+          "Refunds are returned to the original payment method within ten business days of the supplier releasing the funds.",
+        ],
+      },
+      {
+        id: "responsibilities",
+        heading: "Traveller responsibilities",
+        body: [
+          "Valid travel documents, visas and any required vaccinations are yours to hold. We flag what a destination needs, and we check what we can, but we cannot travel in your place.",
+          "Travel insurance is not included and is strongly recommended. Please carry your itinerary and the concierge number with you.",
+        ],
+      },
+      {
+        id: "liability",
+        heading: "Our liability",
+        body: [
+          `${brand.legalName} arranges and coordinates services delivered by independent suppliers. We are not liable for delays or disruption caused by weather, industrial action, border decisions or airline operations.`,
+          "What we are responsible for is the arranging: if we booked it wrong, we fix it and we carry the cost. Our concierge is on call for exactly that, 24 hours a day.",
+        ],
+      },
+    ],
+  },
 } as const;
 
 /** Photography. Unsplash source URLs, sized per usage. */

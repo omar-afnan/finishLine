@@ -82,12 +82,18 @@ export const shadow = {
 } as const;
 
 export const fonts = {
-  /** Inter throughout. Hierarchy comes from weight and casing, not typeface. */
+  /** Inter for the interface. Hierarchy comes from weight and casing. */
   body: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
+  /**
+   * Editorial serif, display sizes only: the landing page and the standalone
+   * pages (contact, privacy, terms). The email and the printed itinerary stay
+   * on Inter, where a web font is a liability rather than a flourish.
+   */
+  display: "'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif",
   /** Monospace for confirmation codes, so digits line up and read as data. */
   mono: "'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace",
   googleFontsUrl:
-    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap",
 } as const;
 
 /** Layout widths per render mode. */

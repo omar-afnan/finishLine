@@ -415,6 +415,7 @@ export function indexPage(root, opts = {}) {
         <a href="#deliverables">Deliverables</a>
         <a href="#files">Files</a>
         <a href="/page.html">Destination</a>
+        <a href="/contact.html">Contact</a>
       </nav>
     </div>
   </div>
@@ -519,9 +520,9 @@ export function indexPage(root, opts = {}) {
       <div class="foot-bottom">
         <span>© ${new Date().getFullYear()} WANDERLUST Inc. Curated Journeys, Crafted for You.</span>
         <nav>
-          <a href="https://wanderlust.example.com/privacy">Privacy</a>
-          <a href="https://wanderlust.example.com/terms">Terms</a>
-          <a href="https://wanderlust.example.com/contact">Contact</a>
+          <a href="/privacy.html">Privacy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/contact.html">Contact</a>
         </nav>
       </div>
     </div>

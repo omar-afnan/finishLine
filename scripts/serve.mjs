@@ -13,7 +13,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { indexPage } from "./index-page.mjs";
+import { fileURLToPath } from "node:url";
 
 const port = Number(process.argv[2] ?? process.env.PORT ?? 4173);
 const root = path.join(process.cwd(), "output");
@@ -25,11 +25,34 @@ const types = {
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".pdf": "application/pdf",
 };
 
 if (!fs.existsSync(root)) {
   console.error("No output/ directory yet. Run `npm run render` first.");
   process.exit(1);
+}
+
+/**
+ * index-page.mjs, re-imported whenever the file on disk changes.
+ *
+ * A plain `import` is resolved once and cached for the life of the process, so
+ * every edit to the landing page needed a server restart to show up, which
+ * looks exactly like the edit not having worked. Keying the import on mtime
+ * means a refresh is enough.
+ */
+const indexModuleUrl = new URL("./index-page.mjs", import.meta.url);
+const indexModulePath = fileURLToPath(indexModuleUrl);
+let cachedIndex = null;
+let cachedMtime = 0;
+
+async function loadIndexPage() {
+  const { mtimeMs } = fs.statSync(indexModulePath);
+  if (!cachedIndex || mtimeMs !== cachedMtime) {
+    cachedIndex = await import(`${indexModuleUrl.href}?v=${mtimeMs}`);
+    cachedMtime = mtimeMs;
+  }
+  return cachedIndex.indexPage;
 }
 
 const server = http.createServer((req, res) => {
@@ -47,9 +70,20 @@ const server = http.createServer((req, res) => {
     // Generated per request rather than served from output/index.html: a build
     // may not have written that file yet, and regenerating keeps the listing in
     // step with whatever is on disk right now.
-    res.writeHead(200, { "content-type": types[".html"], "cache-control": "no-store" }).end(
-      indexPage(root)
-    );
+    loadIndexPage()
+      .then((indexPage) => {
+        res.writeHead(200, { "content-type": types[".html"], "cache-control": "no-store" }).end(
+          indexPage(root)
+        );
+      })
+      .catch((err) => {
+        // A syntax error in index-page.mjs should show up in the browser rather
+        // than taking the server down mid-edit.
+        console.error(`\n  index-page.mjs failed to load: ${err.message}\n`);
+        res
+          .writeHead(500, { "content-type": types[".txt"], "cache-control": "no-store" })
+          .end(`index-page.mjs failed to load:\n\n${err.message}`);
+      });
     return;
   }
 

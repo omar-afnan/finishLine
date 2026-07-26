@@ -17,7 +17,9 @@ import { colors, fonts, radius, shadow } from "./lib/theme";
  */
 export const pageCss = `
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body { margin: 0; }
+  /* The page container carries its own fill, but a short page leaves the body
+     showing below it. Cream rather than the browser default. */
+  body { margin: 0; background: ${colors.bg}; }
   img { max-width: 100%; height: auto; }
 
   /* Sticky navigation. */
@@ -32,14 +34,33 @@ export const pageCss = `
   .wl-navlink:hover { color: ${colors.teal} !important; }
 
   /* Cards in a row are all as tall as the tallest one, so the three journal
-     footers and the four team cards line up instead of ending raggedly. */
-  .wl-cards > div, .wl-facts > div { align-items: stretch !important; }
+     footers and the four team cards line up instead of ending raggedly.
+     A card sets height:100%, which only resolves if every wrapper between it
+     and the flex row stretches too: the column, its padding div, and the tool
+     container Elements puts around the markup. */
+  .wl-cards .u-row, .wl-facts .u-row { align-items: stretch !important; }
   .wl-cards .u-col, .wl-facts .u-col { display: flex !important; }
-  .wl-cards .u-col > .v-col-padding, .wl-facts .u-col > .v-col-padding { width: 100%; }
-  .wl-journal { transition: border-color 180ms ease, box-shadow 180ms ease; }
-  .wl-journal:hover {
+  .wl-cards .u-col > .v-col-padding, .wl-facts .u-col > .v-col-padding {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .wl-cards .v-col-padding > div, .wl-facts .v-col-padding > div {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .wl-journal, .wl-linkcard { transition: border-color 180ms ease, box-shadow 180ms ease; }
+  .wl-journal:hover, .wl-linkcard:hover {
     border-color: ${colors.teal};
     box-shadow: ${shadow.ambient};
+  }
+
+  /* Standalone pages: contact, privacy, terms. */
+  .wl-toc-link:hover { color: ${colors.teal} !important; }
+  .wl-toc-link:focus-visible, .wl-linkcard:focus-visible {
+    outline: 2px solid ${colors.teal};
+    outline-offset: 3px;
   }
 
   /* Interaction states. Hover darkens by one step, focus is always visible. */
@@ -109,6 +130,10 @@ export const pageCss = `
     .wl-hero { height: 380px !important; }
     .wl-hero-copy { padding: 28px 24px !important; }
     .wl-hero-title { font-size: 34px !important; line-height: 42px !important; }
+    .wl-page-title { font-size: 36px !important; }
+
+    /* The clause index turns into a chip list above the clauses it links to. */
+    .wl-legal .u-col:first-child { padding-right: 0 !important; margin-bottom: 24px; }
 
     /* Section rhythm compresses from 64px to 40px. */
     .wl-section { padding-top: 40px !important; }
@@ -145,6 +170,7 @@ export const pageCss = `
     .wl-hero { height: 320px !important; }
     .wl-hero-copy { padding: 22px 18px !important; }
     .wl-hero-title { font-size: 28px !important; line-height: 36px !important; }
+    .wl-page-title { font-size: 30px !important; }
 
     .wl-section { padding-left: 16px !important; padding-right: 16px !important; }
 

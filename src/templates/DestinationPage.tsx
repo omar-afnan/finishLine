@@ -12,7 +12,6 @@ import {
   ColumnLayouts,
   Heading,
   Paragraph,
-  Button,
   Divider,
   Image,
 } from "@unlayer/react-elements";
@@ -26,11 +25,10 @@ import {
   forecast,
   journalEntries,
   aboutContent,
-  navLinks,
   links,
   images,
 } from "../lib/data";
-import { colors, fonts, radius, type, hairlineBorder } from "../lib/theme";
+import { colors, fonts, radius, type } from "../lib/theme";
 import {
   SectionLabel,
   HeroBanner,
@@ -44,6 +42,7 @@ import {
   TeamCard,
   QuoteCard,
 } from "../lib/tools";
+import { navRow } from "./SiteNav";
 import { footerRows } from "./SiteFooter";
 
 /** The page shows the opening three days and links out for the rest. */
@@ -52,49 +51,7 @@ const previewDays = itinerary.slice(0, 3);
 export default function DestinationPage() {
   return (
     <Page backgroundColor={colors.white} contentWidth="960px" fontFamily={fonts.body}>
-      {/* 1. Navigation */}
-      <Row
-        className="wl-nav"
-        backgroundColor={colors.white}
-        padding="16px 24px"
-        layout={ColumnLayouts.ThreeNarrowWideNarrow}
-      >
-        <Column>
-          <Paragraph
-            textAlign="left"
-            html={`<a href="${brand.websiteUrl}" class="wl-brand" style="font-family:${fonts.body};font-size:19px;line-height:26px;font-weight:700;letter-spacing:2px;color:${colors.navy};text-decoration:none;">${brand.name}</a>`}
-          />
-        </Column>
-        <Column>
-          {/* Hand-rolled rather than <Menu>: that tool hardcodes its own link
-              blue and stamps target="_blank" on every item, so the in-page
-              anchors opened a second copy of the page in a new tab instead of
-              scrolling to the section. */}
-          <Paragraph
-            textAlign="center"
-            html={navLinks
-              .map(
-                (l) =>
-                  `<a href="${l.href}" class="wl-navlink" style="display:inline-block;padding:5px 15px;font-family:${fonts.body};font-size:14px;line-height:20px;color:${colors.body};text-decoration:none;">${l.text}</a>`
-              )
-              .join("")}
-          />
-        </Column>
-        <Column>
-          <Button
-            href={links.myTrips}
-            backgroundColor={colors.white}
-            color={colors.teal}
-            fontSize="14px"
-            fontWeight={600}
-            padding="11px 18px"
-            borderRadius={radius.md}
-            border={hairlineBorder(colors.teal)}
-          >
-            My Trips
-          </Button>
-        </Column>
-      </Row>
+      {navRow()}
 
       {/* 2. Hero */}
       <Row backgroundColor={colors.white} padding="0 24px">

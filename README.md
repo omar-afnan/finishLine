@@ -16,6 +16,8 @@ When Alex Morgan books the Tokyo Explorer package, the reservation system has on
 | `<Page>` | Destination page | Responsive 960px flexbox HTML — hero, quick facts, day-by-day, forecast, gallery |
 | `<Document>` | Printed itinerary | 700px print-ready HTML with page-break rules, opens the browser print dialog |
 
+Three more `<Page>` documents come off the same tokens and share the header and footer: `contact.html` (the index in `design imgs/contactPage.png`), `privacy.html` and `terms.html`. The last two are one template rendered twice, with the clauses living in `lib/data.ts` beside everything else.
+
 Swap `src/lib/data.ts` for a row out of a real reservation system and every output updates together — same reference, same times, same totals, everywhere.
 
 ## 🚀 How to run
@@ -43,6 +45,9 @@ output/
 ├── page.html                # <Page>  responsive destination page
 ├── itinerary.html           # <Document>  print-ready itinerary
 ├── itinerary.pdf            # the itinerary as a real PDF (npm run pdf)
+├── contact.html             # <Page>  contact index, per design imgs/contactPage.png
+├── privacy.html             # <Page>  privacy policy
+├── terms.html               # <Page>  terms of service
 ├── email.design.json        # renderToJson  editor-compatible design JSON
 ├── page.design.json
 └── itinerary.design.json
@@ -112,6 +117,9 @@ src/
     ├── BookingEmail.tsx        # <Email>  masthead, trip timeline, flights, hotel, price, CTAs
     ├── DestinationPage.tsx     # <Page>  sticky nav, hero, quick facts, days, forecast, about
     ├── ItineraryDocument.tsx   # <Document> passenger record, flight table, day blocks, policies
+    ├── ContactPage.tsx         # <Page>  contact index and concierge channels
+    ├── LegalPage.tsx           # <Page>  one shell, rendered twice: privacy and terms
+    ├── SiteNav.tsx             # One header, shared by every web page
     └── SiteFooter.tsx          # One footer, three variants (web / email / print)
 
 scripts/
@@ -149,6 +157,10 @@ scripts/
 | `JournalCard` | web | One story in the journal grid |
 | `TeamCard` | web | One person in the four-up about grid |
 | `QuoteCard` | web | The mission statement as a pull quote |
+| `PageHero` | web | Serif display headline for the standalone pages |
+| `LinkCard` | web | Whole-card link in the contact index |
+| `LegalSection` | web | One numbered clause on privacy / terms |
+| `TocList` | web | The clause index beside a legal page |
 
 Tools with both exporters emit **bulletproof nested tables with `bgcolor` fallbacks** for email and **clean flexbox divs** for web — one JSX call site, two correct outputs.
 

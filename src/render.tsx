@@ -5,6 +5,9 @@
  *   email.txt       renderToPlainText — the text/plain MIME part
  *   page.html       <Page> — responsive web page
  *   itinerary.html  <Document> — print-ready, opens the browser print dialog
+ *   contact.html    <Page> — contact index, per design imgs/contactPage.png
+ *   privacy.html    <Page> — privacy policy, same shell as terms
+ *   terms.html      <Page> — terms of service
  *   *.design.json   renderToJson — editor-compatible design JSON
  *
  * renderToHtml owns the document shell and has no hook for custom CSS, so the
@@ -16,6 +19,8 @@ import { renderToHtml, renderToPlainText, renderToJson } from "@unlayer/react-el
 import BookingEmail from "./templates/BookingEmail";
 import DestinationPage from "./templates/DestinationPage";
 import ItineraryDocument from "./templates/ItineraryDocument";
+import ContactPage from "./templates/ContactPage";
+import LegalPage from "./templates/LegalPage";
 import { brand, booking, trip } from "./lib/data";
 import { fonts } from "./lib/theme";
 import { pageCss, documentCss, printBar } from "./styles";
@@ -71,6 +76,24 @@ const targets: Target[] = [
     title: `Travel itinerary ${booking.reference} · ${brand.name}`,
     css: documentCss,
     transform: wrapDocument,
+  },
+  {
+    name: "contact",
+    element: <ContactPage />,
+    title: `Concierge & Support · ${brand.name}`,
+    css: pageCss,
+  },
+  {
+    name: "privacy",
+    element: <LegalPage page="privacy" />,
+    title: `Privacy Policy · ${brand.name}`,
+    css: pageCss,
+  },
+  {
+    name: "terms",
+    element: <LegalPage page="terms" />,
+    title: `Terms of Service · ${brand.name}`,
+    css: pageCss,
   },
 ];
 

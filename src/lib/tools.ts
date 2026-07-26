@@ -847,3 +847,118 @@ export const PaidStamp = registerTool({
     },
   },
 });
+
+/* ------------------------------------------------------------------ *
+ * PageHero — the display headline on the standalone pages
+ *
+ * Editorial serif at 48px, matching the landing page and
+ * design imgs/contactPage.png. Web only: the email and the printed
+ * itinerary have no business loading a display font.
+ * ------------------------------------------------------------------ */
+
+export const PageHero = registerTool({
+  name: "wl_page_hero",
+  values: { eyebrow: "", title: "", lede: "", meta: "" },
+  renderer: {
+    exporters: {
+      web: (v) => `
+        <div>
+          <div style="${labelStyle}color:${colors.teal};">${esc(v.eyebrow)}</div>
+          <h1 class="wl-page-title" style="font-family:${fonts.display};font-size:48px;line-height:1.08;font-weight:600;letter-spacing:-0.02em;color:${colors.navy};margin:14px 0 0;">${esc(v.title)}</h1>
+          ${v.lede
+        ? `<p style="${bodyStyle}font-size:15px;line-height:24px;margin:18px 0 0;max-width:62ch;">${esc(v.lede)}</p>`
+        : ""
+      }
+          ${v.meta
+        ? `<p style="${base}font-family:${fonts.mono};font-size:11px;line-height:16px;letter-spacing:0.12em;text-transform:uppercase;color:${colors.warmGray};margin:16px 0 0;">${esc(v.meta)}</p>`
+        : ""
+      }
+        </div>`,
+    },
+  },
+});
+
+/* ------------------------------------------------------------------ *
+ * LinkCard — one card in the contact page index
+ *
+ * The whole card is the anchor, so the hit area is the card rather than the
+ * four words of its title.
+ * ------------------------------------------------------------------ */
+
+export const LinkCard = registerTool({
+  name: "wl_link_card",
+  values: { eyebrow: "", title: "", body: "", to: "" },
+  renderer: {
+    exporters: {
+      web: (v) => `
+        <a class="wl-linkcard" href="${esc(v.to)}" style="${cardStyle}border-radius:${radius.lg};display:flex;flex-direction:column;padding:26px 24px;height:100%;box-sizing:border-box;text-decoration:none;">
+          <span style="${labelStyle}color:${colors.teal};">${esc(v.eyebrow)}</span>
+          <span style="${base}font-size:17px;line-height:24px;font-weight:600;color:${colors.navy};margin-top:12px;">${esc(v.title)}</span>
+          <span style="${bodyStyle}margin-top:10px;">${esc(v.body)}</span>
+        </a>`,
+    },
+  },
+});
+
+/* ------------------------------------------------------------------ *
+ * LegalSection — one numbered clause on the privacy and terms pages
+ * ------------------------------------------------------------------ */
+
+export const LegalSection = registerTool({
+  name: "wl_legal_section",
+  values: {
+    id: "",
+    number: "",
+    heading: "",
+    body: [] as unknown as string[],
+    last: false,
+  },
+  renderer: {
+    exporters: {
+      web: (v) => {
+        const paras = ((v.body ?? []) as string[])
+          .map((p) => `<p style="${bodyStyle}margin:12px 0 0;">${esc(p)}</p>`)
+          .join("");
+        return `
+          <section id="${esc(v.id)}" style="scroll-margin-top:88px;padding-bottom:${v.last ? "0" : "32px"};margin-bottom:${v.last ? "0" : "32px"};${v.last ? "" : `border-bottom:1px solid ${colors.border};`}">
+            <div style="display:flex;align-items:baseline;gap:12px;">
+              <span style="${base}font-family:${fonts.mono};font-size:12px;color:${colors.teal};">${esc(v.number)}</span>
+              <h2 style="font-family:${fonts.display};font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:${colors.navy};margin:0;">${esc(v.heading)}</h2>
+            </div>
+            <div style="padding-left:26px;">${paras}</div>
+          </section>`;
+      },
+    },
+  },
+});
+
+/* ------------------------------------------------------------------ *
+ * TocList — the clause index beside a legal page
+ * ------------------------------------------------------------------ */
+
+export const TocList = registerTool({
+  name: "wl_toc_list",
+  values: {
+    title: "On this page",
+    items: [] as unknown as Array<{ id: string; heading: string }>,
+  },
+  renderer: {
+    exporters: {
+      web: (v) => {
+        const items = (v.items ?? []) as Array<{ id: string; heading: string }>;
+        const rows = items
+          .map(
+            (i, n) =>
+              `<a class="wl-toc-link" href="#${esc(i.id)}" style="display:block;${bodyStyle}font-size:13.5px;padding:7px 0;text-decoration:none;">` +
+              `<span style="font-family:${fonts.mono};font-size:11px;color:${colors.teal};padding-right:8px;">${String(n + 1).padStart(2, "0")}</span>${esc(i.heading)}</a>`
+          )
+          .join("");
+        return `
+          <nav class="wl-toc" aria-label="${esc(v.title)}" style="border-left:2px solid ${colors.border};padding-left:18px;">
+            <div style="${labelStyle}color:${colors.warmGray};padding-bottom:6px;">${esc(v.title)}</div>
+            ${rows}
+          </nav>`;
+      },
+    },
+  },
+});
