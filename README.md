@@ -1,6 +1,6 @@
 # ✈️ WANDERLUST
 
-**One React codebase. Three render modes. One booking becomes an email, a destination page and a printed itinerary — from a single source of truth.**
+**One React codebase. Three render modes. One booking becomes an email, a destination page and a printed itinerary  from a single source of truth.**
 
 WANDERLUST is a luxury travel booking suite built entirely with [Unlayer Elements](https://github.com/unlayer/elements) (`@unlayer/react-elements`). Feed it one reservation record and it renders the complete post-booking experience: the confirmation **email**, the public destination **page**, and a print-ready **itinerary**.
 
@@ -139,7 +139,7 @@ scripts/
 | `DetailRow` | email · web | Icon + label + value pairs for check-in / check-out |
 | `PriceTable` | email · web | Subtotal / taxes / total with a rule above the total |
 | `CheckList` | email · web | Highlight bullets with check icons |
-| `HeroBanner` | web | Full-bleed image with a bottom scrim — deliberately web-only |
+| `HeroBanner` | web | Full-bleed image with a bottom scrim  deliberately web-only |
 | `FactStat` | web | One cell of the quick facts bar |
 | `DayCard` | web | Vertical itinerary entry with a connecting rail |
 | `DayBlock` | web | Printed itinerary day: terracotta header bar plus activity rows |
@@ -175,7 +175,7 @@ Tools with both exporters emit **bulletproof nested tables with `bgcolor` fallba
 
 ## 🎨 Design reference
 
-The original design brief and mockups live in `design imgs/` — `DESIGN.md` holds the full token spec, alongside the three reference renders:
+The original design brief and mockups live in `design imgs/` `DESIGN.md` holds the full token spec, alongside the three reference renders:
 
 | Email | Page | Itinerary |
 |---|---|---|
