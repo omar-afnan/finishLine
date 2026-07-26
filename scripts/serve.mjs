@@ -13,6 +13,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { indexPage } from "./index-page.mjs";
 
 const port = Number(process.argv[2] ?? process.env.PORT ?? 4173);
 const root = path.join(process.cwd(), "output");
@@ -43,13 +44,11 @@ const server = http.createServer((req, res) => {
   }
 
   if (url === "/") {
-    // No index.html is generated, so list what was rendered instead.
-    const files = fs.readdirSync(root).filter((f) => f.endsWith(".html"));
-    res.writeHead(200, { "content-type": types[".html"] }).end(
-      `<!doctype html><meta charset="utf-8"><title>WANDERLUST output</title>
-       <body style="font:16px/1.6 system-ui;max-width:38rem;margin:4rem auto;padding:0 1rem">
-       <h1 style="font-size:1.4rem">WANDERLUST output</h1>
-       <ul>${files.map((f) => `<li><a href="/${f}">${f}</a></li>`).join("")}</ul>`
+    // Generated per request rather than served from output/index.html: a build
+    // may not have written that file yet, and regenerating keeps the listing in
+    // step with whatever is on disk right now.
+    res.writeHead(200, { "content-type": types[".html"], "cache-control": "no-store" }).end(
+      indexPage(root)
     );
     return;
   }

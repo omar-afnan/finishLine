@@ -62,6 +62,35 @@ Type-check without emitting:
 npm run typecheck
 ```
 
+## ▲ Deploying to Vercel
+
+`npm run build` is the deploy build: it renders the templates, then writes `output/index.html` — a card grid linking to all three deliverables — plus a copy of the favicon. That gives the static host a real file to serve at `/`.
+
+```bash
+npm run build   # render + write the index; produces exactly what Vercel uploads
+```
+
+`vercel.json` pins the whole configuration, so the dashboard needs no manual setup:
+
+| Setting | Value |
+|---|---|
+| Build command | `npm run build` |
+| Output directory | `output` |
+| Framework preset | none (static) |
+| `cleanUrls` | on — `/page.html` also answers at `/page` |
+
+To ship it:
+
+```bash
+npm i -g vercel
+vercel        # preview deployment
+vercel --prod # production
+```
+
+Or import the repo at [vercel.com/new](https://vercel.com/new) — `vercel.json` is picked up automatically, and every push builds and deploys.
+
+`output/` stays in `.gitignore` on purpose: it is generated, so Vercel rebuilds it from source on each deploy rather than serving a committed snapshot that could drift from the templates.
+
 ## 🏗️ Architecture
 
 ```
@@ -78,6 +107,11 @@ src/
     ├── BookingEmail.tsx        # <Email>  masthead, trip timeline, flights, hotel, price, CTAs
     ├── DestinationPage.tsx     # <Page>  sticky nav, hero, quick facts, days, forecast, gallery
     └── ItineraryDocument.tsx   # <Document> passenger record, flight table, day blocks, policies
+
+scripts/
+├── index-page.mjs          # The output/ front door. Imported by serve.mjs for the live
+│                           #   preview, run directly by the build to write index.html
+└── serve.mjs               # Zero-dependency LAN static server for output/
 ```
 
 - **`lib/data.ts`**  one typed set of exports (`brand`, `booking`, `trip`, `flights`, `hotel`, `pricing`, `inclusions`, `itinerary`, `policies`, `essentials`, `forecast`, …) plus pre-shaped rows for the `<Table>` component. Every template imports from here; nothing is duplicated.
