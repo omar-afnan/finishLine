@@ -15,12 +15,9 @@ import {
   Button,
   Divider,
   Image,
-  Menu,
-  Social,
 } from "@unlayer/react-elements";
 import {
   brand,
-  booking,
   trip,
   destination,
   quickFacts,
@@ -44,8 +41,10 @@ import {
   ForecastStrip,
   Anchor,
   JournalCard,
-  TeamList,
+  TeamCard,
+  QuoteCard,
 } from "../lib/tools";
+import { footerRows } from "./SiteFooter";
 
 /** The page shows the opening three days and links out for the rest. */
 const previewDays = itinerary.slice(0, 3);
@@ -67,11 +66,18 @@ export default function DestinationPage() {
           />
         </Column>
         <Column>
-          <Menu
-            items={navLinks.map((l) => ({ text: l.text, href: l.href }))}
-            fontSize="14px"
-            textColor={colors.body}
-            align="center"
+          {/* Hand-rolled rather than <Menu>: that tool hardcodes its own link
+              blue and stamps target="_blank" on every item, so the in-page
+              anchors opened a second copy of the page in a new tab instead of
+              scrolling to the section. */}
+          <Paragraph
+            textAlign="center"
+            html={navLinks
+              .map(
+                (l) =>
+                  `<a href="${l.href}" class="wl-navlink" style="display:inline-block;padding:5px 15px;font-family:${fonts.body};font-size:14px;line-height:20px;color:${colors.body};text-decoration:none;">${l.text}</a>`
+              )
+              .join("")}
           />
         </Column>
         <Column>
@@ -109,16 +115,13 @@ export default function DestinationPage() {
       <Row
         className="wl-facts"
         backgroundColor={colors.white}
-        padding="24px 24px 0"
+        padding="24px 18px 0"
         layout={ColumnLayouts.FourEqual}
       >
         {quickFacts.map((f) => (
-          <Column
-            key={f.label}
-            backgroundColor={colors.bg}
-            padding="18px 20px"
-            borderRadius={radius.md}
-          >
+          /* The tile itself is drawn by FactStat. The column only carries the
+             6px gutter that separates the four boxes. */
+          <Column key={f.label} padding="0 6px">
             <FactStat icon={f.icon} label={f.label} value={f.value} />
           </Column>
         ))}
@@ -278,8 +281,11 @@ export default function DestinationPage() {
         </Column>
       </Row>
 
-      {/* 9. About — #about */}
-      <Row className="wl-section" backgroundColor={colors.bg} padding="64px 24px 24px">
+      {/* 9. About — #about
+          Two balanced halves (story beside the mission quote) over a four-up
+          team row, so the section fills its width instead of trailing off into
+          empty cream beside a narrow list. */}
+      <Row className="wl-section" backgroundColor={colors.bg} padding="64px 24px 0">
         <Column>
           <Anchor id="about" />
           <SectionLabel text="About WANDERLUST" />
@@ -295,15 +301,15 @@ export default function DestinationPage() {
           />
         </Column>
       </Row>
-      <Row backgroundColor={colors.bg} padding="0 24px 64px" layout={ColumnLayouts.TwoWideNarrow}>
-        <Column padding="0 32px 0 0">
+      <Row backgroundColor={colors.bg} padding="24px 24px 0" layout={ColumnLayouts.TwoEqual}>
+        <Column padding="0 20px 0 0">
           <Paragraph
             fontSize={type.body.size}
             lineHeight={type.body.line}
             color={colors.body}
             text={aboutContent.story}
           />
-          <Divider borderTopWidth="1px" borderTopColor={colors.border} width="100%" containerPadding="20px 0 16px" />
+          <Divider borderTopWidth="1px" borderTopColor={colors.border} width="100%" containerPadding="18px 0 14px" />
           <Paragraph
             fontSize={type.h3.size}
             lineHeight={type.h3.line}
@@ -314,85 +320,30 @@ export default function DestinationPage() {
           />
           <CheckList items={aboutContent.values as unknown as never} />
         </Column>
-        <Column>
-          <Paragraph
-            fontSize={type.h3.size}
-            lineHeight={type.h3.line}
-            fontWeight={600}
-            color={colors.navy}
-            text="Team"
-            containerPadding="0 0 6px"
-          />
-          <TeamList members={aboutContent.team as unknown as never} />
+        <Column padding="0 0 0 20px">
+          <QuoteCard text={aboutContent.mission} attribution={`${brand.name}, Est. ${brand.established}`} />
         </Column>
+      </Row>
+      <Row className="wl-section" backgroundColor={colors.bg} padding="40px 24px 0">
+        <Column>
+          <SectionLabel text="The team" color={colors.warmGray} />
+        </Column>
+      </Row>
+      <Row
+        className="wl-cards"
+        backgroundColor={colors.bg}
+        padding="14px 18px 64px"
+        layout={ColumnLayouts.FourEqual}
+      >
+        {aboutContent.team.map((m) => (
+          <Column key={m.name} padding="0 6px">
+            <TeamCard name={m.name} role={m.role} origin={m.origin} />
+          </Column>
+        ))}
       </Row>
 
-      {/* 10. Footer */}
-      <Row backgroundColor={colors.navy} padding="56px 24px 24px" layout={ColumnLayouts.ThreeEqual}>
-        <Column padding="0 24px 0 0">
-          <Paragraph
-            html={`<span style="font-family:${fonts.body};font-size:19px;line-height:26px;font-weight:700;letter-spacing:2px;color:${colors.white};">${brand.name}</span>`}
-          />
-          <Paragraph
-            fontSize={type.small.size}
-            lineHeight={type.small.line}
-            color={colors.onNavyMuted}
-            text={`${brand.tagline}. Crafting journeys for the mindful explorer since ${brand.established}.`}
-          />
-        </Column>
-        <Column>
-          <Paragraph
-            html={`<span style="font-family:${fonts.body};font-size:11px;line-height:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${colors.white};">Support</span>`}
-          />
-          <Paragraph
-            fontSize={type.small.size}
-            lineHeight="24px"
-            color={colors.onNavyMuted}
-            html={
-              `<a href="${links.contact}" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">Contact concierge</a><br />` +
-              `<a href="tel:+15552345678" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">${brand.supportPhone}</a><br />` +
-              `<a href="mailto:${brand.supportEmail}" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">${brand.supportEmail}</a>`
-            }
-          />
-        </Column>
-        <Column>
-          <Paragraph
-            html={`<span style="font-family:${fonts.body};font-size:11px;line-height:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${colors.white};">Legal</span>`}
-          />
-          <Paragraph
-            fontSize={type.small.size}
-            lineHeight="24px"
-            color={colors.onNavyMuted}
-            html={
-              `<a href="${links.privacy}" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">Privacy policy</a><br />` +
-              `<a href="${links.terms}" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">Terms of service</a><br />` +
-              `<a href="${links.unsubscribe}" class="wl-flink" style="color:${colors.onNavyMuted};text-decoration:none;">Email preferences</a>`
-            }
-          />
-        </Column>
-      </Row>
-      <Row backgroundColor={colors.navy} padding="0 24px 40px">
-        <Column>
-          <Divider borderTopWidth="1px" borderTopColor="#1E293B" width="100%" containerPadding="0 0 20px" />
-          <Social
-            icons={[
-              { name: "Instagram", url: "https://instagram.com/example" },
-              { name: "X", url: "https://x.com/example" },
-              { name: "Facebook", url: "https://facebook.com/example" },
-            ]}
-            iconType="circle"
-            iconSize={28}
-            spacing={10}
-            align="left"
-          />
-          <Paragraph
-            fontSize="11px"
-            lineHeight="16px"
-            color={colors.onNavyMuted}
-            text={`© ${brand.established + 8} ${brand.legalName} · ${brand.city} · Booking ${booking.reference}`}
-          />
-        </Column>
-      </Row>
+      {/* 10. Footer — shared with the email and the printed itinerary. */}
+      {footerRows({ variant: "web" })}
     </Page>
   );
 }

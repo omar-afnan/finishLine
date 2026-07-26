@@ -7,32 +7,36 @@
  */
 
 export const colors = {
-  /** Core brand teal. Primary actions, active states, section labels. */
-  teal: "#0D9488",
-  /** Deeper teal for hover states and dark teal surfaces. */
-  tealDeep: "#0B7A70",
-  /** Tinted teal surface. Featured cards, badges, hero wash. */
-  tealLight: "#F0FDFA",
-  /** Authority colour. Headings, nav, table headers, footer. */
-  navy: "#0F172A",
-  /** Secondary text. Softens the interface without losing contrast. */
-  warmGray: "#64748B",
+  /**
+   * Core brand terracotta. Primary actions, active states, section labels.
+   * (Token keeps its historical `teal` name so every template keeps compiling;
+   * the value is the warm accent from design imgs/landingPage.png.)
+   */
+  teal: "#C0623A",
+  /** Deeper terracotta for hover states and pressed buttons. */
+  tealDeep: "#A44F2C",
+  /** Tinted clay surface. Featured cards, badges, hero wash. */
+  tealLight: "#F2E8DD",
+  /** Authority colour. Headings, nav, table headers, footer. Deep forest. */
+  navy: "#1F2A24",
+  /** Secondary text. Warm stone, softens the interface. */
+  warmGray: "#7C7360",
   /** Body copy. Slightly darker than warmGray for long-form reading. */
-  body: "#334155",
-  /** Level 0 canvas behind white cards. */
-  bg: "#F8FAFC",
-  /** Level 1 surface. */
-  white: "#FFFFFF",
+  body: "#5F5849",
+  /** Level 0 canvas behind cards. Warm cream. */
+  bg: "#F4EFE6",
+  /** Level 1 surface. Paper white with a cream cast. */
+  white: "#FBF8F2",
   /** Confirmed / paid states. */
-  success: "#059669",
+  success: "#4F7A56",
   /** High-energy accent. CTAs and stamps only, never large fills. */
-  coral: "#E85D04",
+  coral: "#C0623A",
   /** 1px card and table borders. */
-  border: "#E2E8F0",
+  border: "#E3DACB",
   /** Hairline separators inside lists. */
-  hairline: "#F1F5F9",
-  /** Muted text on navy surfaces. */
-  onNavyMuted: "#94A3B8",
+  hairline: "#EFE8DC",
+  /** Muted text on the deep-forest surfaces. */
+  onNavyMuted: "#A9B2A6",
 } as const;
 
 /**

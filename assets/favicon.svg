@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="WANDERLUST">
-  <!-- Navy tile. colors.navy -->
-  <rect width="64" height="64" rx="14" fill="#0F172A"/>
-  <!-- Compass bezel. colors.teal -->
-  <circle cx="32" cy="32" r="20" fill="none" stroke="#0D9488" stroke-width="3"/>
-  <!-- Needle. North reads light, south reads teal, so the mark keeps its
+  <!-- Forest tile. colors.navy -->
+  <rect width="64" height="64" rx="14" fill="#1F2A24"/>
+  <!-- Compass bezel. colors.teal (terracotta) -->
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#C0623A" stroke-width="3"/>
+  <!-- Needle. North reads light, south reads terracotta, so the mark keeps its
        direction at 16px. Sized to nearly fill the bezel: at favicon scale a
        thin needle inside a thick ring collapses into an indistinct blob. -->
-  <path d="M32 11 L42 32 L22 32 Z" fill="#F0FDFA"/>
-  <path d="M32 53 L42 32 L22 32 Z" fill="#0D9488"/>
-  <circle cx="32" cy="32" r="2.4" fill="#0F172A"/>
+  <path d="M32 11 L42 32 L22 32 Z" fill="#F2E8DD"/>
+  <path d="M32 53 L42 32 L22 32 Z" fill="#C0623A"/>
+  <circle cx="32" cy="32" r="2.4" fill="#1F2A24"/>
 </svg>

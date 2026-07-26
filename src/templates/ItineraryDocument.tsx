@@ -29,6 +29,7 @@ import {
 import { colors, fonts, radius, type, hairlineBorder } from "../lib/theme";
 import { icon } from "../lib/icons";
 import { SectionLabel, SplitRow, DetailRow, PriceTable, DayBlock, PaidStamp } from "../lib/tools";
+import { footerRows } from "./SiteFooter";
 
 /** Hairline box around the flight table. */
 const tableBorder = {
@@ -269,23 +270,18 @@ export default function ItineraryDocument() {
         ))}
       </Row>
 
-      {/* 8. Footer */}
-      <Row backgroundColor={colors.white} padding="34px 40px 40px">
+      {/* 8. Footer — the same three columns as the page and the email, in the
+          print variant: no dark fill to soak a sheet in toner. */}
+      {footerRows({ variant: "print", padding: "40px" })}
+      <Row backgroundColor={colors.white} padding="0 40px 40px">
         <Column>
-          <Divider borderTopWidth="1px" borderTopColor={colors.border} width="100%" containerPadding="0 0 14px" />
           <SplitRow
             left={
-              `<span style="font-family:${fonts.body};font-size:11px;line-height:16px;color:${colors.warmGray};">${brand.name} · ${brand.tagline}</span>`
+              `<span style="font-family:${fonts.body};font-size:10px;line-height:15px;color:${colors.warmGray};"><span class="wl-pagenum">Page 1</span>, ${icon("phone", colors.warmGray, 10)} ${brand.supportPhone}</span>`
             }
             right={
-              `<span style="font-family:${fonts.body};font-size:11px;line-height:16px;color:${colors.warmGray};">${brand.website}</span>`
+              `<span style="font-family:${fonts.body};font-size:10px;line-height:15px;color:${colors.warmGray};">${brand.website}</span>`
             }
-          />
-          <Paragraph
-            fontSize="10px"
-            lineHeight="15px"
-            color={colors.warmGray}
-            html={`<span class="wl-pagenum">Page 1</span> · Issued ${booking.issued} · ${icon("phone", colors.warmGray, 10)} ${brand.supportPhone}`}
           />
         </Column>
       </Row>

@@ -36,8 +36,8 @@ export const trip = {
   destination: "Tokyo, Japan",
   city: "Tokyo",
   country: "Japan",
-  dates: "Aug 15 – Aug 22, 2026",
-  datesShort: "Aug 15 – 22",
+  dates: "Aug 15 to Aug 22, 2026",
+  datesShort: "Aug 15 to 22",
   startDate: "August 15, 2026",
   endDate: "August 22, 2026",
   nights: 6,
@@ -126,7 +126,7 @@ export const inclusions = [
 
 /** Quick facts strip on the destination page. */
 export const quickFacts = [
-  { icon: "calendar", label: "Dates", value: "Aug 15 – 22" },
+  { icon: "calendar", label: "Dates", value: "Aug 15 to 22" },
   { icon: "thermometer", label: "Forecast", value: "Avg 28°C" },
   { icon: "clock", label: "Flight time", value: "11h 25m" },
   { icon: "coins", label: "Exchange", value: "1 USD = 148 JPY" },
@@ -274,7 +274,7 @@ export const journalEntries = [
   },
   {
     title: "The Art of the Japanese Onsen: A First-Timer's Primer",
-    excerpt: "From scrubbing stations to the perfect post-bath vending-machine milk — everything you need to know before you step into the waters.",
+    excerpt: "From scrubbing stations to the perfect post-bath vending-machine milk, everything you need to know before you step into the waters.",
     author: "Concierge Team",
     date: "June 2026",
     readTime: "6 min read",
@@ -295,7 +295,7 @@ export const aboutContent = {
   story:
     "WANDERLUST was founded in 2018 on a simple conviction: the best journeys feel effortless because someone thought of everything before you left. What began as a single curated itinerary for Tokyo has grown into a boutique travel platform serving twelve destinations across Asia, with a concierge team that handles every transfer, reservation, and recommendation.",
   mission:
-    "We believe luxury in travel is not about excess — it is about removing friction. Every detail, from the airport transfer to the omakase reservation, is pre-arranged so our guests can focus on what matters: being present in a place they have never been.",
+    "We believe luxury in travel is not about excess. It is about removing friction. Every detail, from the airport transfer to the omakase reservation, is pre-arranged so our guests can focus on what matters: being present in a place they have never been.",
   team: [
     { name: "Haruki Tanaka", role: "Founder & CEO", origin: "Tokyo / San Francisco" },
     { name: "Sofia Reyes", role: "Head of Concierge", origin: "Mexico City" },
@@ -390,7 +390,12 @@ export const navLinks = [
 
 export const links = {
   itinerary: `${brand.websiteUrl}/trips/${booking.reference}`,
-  pdf: `${brand.websiteUrl}/trips/${booking.reference}/itinerary.pdf`,
+  /**
+   * The generated PDF sits next to the other deliverables, so a relative
+   * href works from the email, the page and the document alike. A real send
+   * would swap in an absolute CDN URL; `npm run pdf` writes the file.
+   */
+  pdf: "itinerary.pdf",
   myTrips: `${brand.websiteUrl}/my-trips`,
   unsubscribe: `${brand.websiteUrl}/preferences`,
   privacy: `${brand.websiteUrl}/privacy`,

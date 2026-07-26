@@ -11,6 +11,8 @@
  * platform and carry no accessible name.
  */
 
+import { colors } from "./theme";
+
 type IconName =
   | "plane"
   | "planeTakeoff"
@@ -101,7 +103,7 @@ export function icon(
 }
 
 /** Data URI form, for the few places that need an `src` rather than markup. */
-export function iconDataUri(name: IconName, color: string = "#0D9488", size: number = 24): string {
+export function iconDataUri(name: IconName, color: string = colors.teal, size: number = 24): string {
   return `data:image/svg+xml,${encodeURIComponent(icon(name, color, size))}`;
 }
 

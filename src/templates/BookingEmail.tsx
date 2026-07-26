@@ -16,7 +16,6 @@ import {
   Divider,
   Html,
   Image,
-  Social,
 } from "@unlayer/react-elements";
 import {
   brand,
@@ -40,6 +39,7 @@ import {
   DetailRow,
   PriceTable,
 } from "../lib/tools";
+import { footerRows } from "./SiteFooter";
 
 const card = {
   backgroundColor: colors.white,
@@ -211,7 +211,7 @@ export default function BookingEmail() {
         <Column
           backgroundColor={colors.tealLight}
           borderRadius={radius.md}
-          border={hairlineBorder("#CCFBF1")}
+          border={hairlineBorder("#E7D6C4")}
           padding="20px"
         >
           <SectionLabel text="Pricing summary" />
@@ -277,13 +277,13 @@ export default function BookingEmail() {
         </Column>
       </Row>
 
-      {/* 9. Footer */}
+      {/* 9. Sign-off, then the footer shared with the page and the document. */}
       <Row backgroundColor={colors.bg} padding="34px 24px 0">
         <Column>
           <Divider borderTopWidth="1px" borderTopColor={colors.border} width="100%" />
         </Column>
       </Row>
-      <Row backgroundColor={colors.bg} padding="22px 24px 8px">
+      <Row backgroundColor={colors.bg} padding="22px 24px 34px">
         <Column>
           <Paragraph
             fontSize={type.body.size}
@@ -293,44 +293,7 @@ export default function BookingEmail() {
           />
         </Column>
       </Row>
-      <Row backgroundColor={colors.bg} padding="0 24px 8px">
-        <Column>
-          <Social
-            icons={[
-              { name: "Instagram", url: "https://instagram.com/example" },
-              { name: "X", url: "https://x.com/example" },
-              { name: "Facebook", url: "https://facebook.com/example" },
-            ]}
-            iconType="circle"
-            // 44 rather than the 26 the desktop mock uses: these are the only
-            // icon-only targets in the email, and the email has no stylesheet
-            // to grow the hit area with, so the glyph itself has to carry the
-            // full thumb target.
-            iconSize={44}
-            spacing={10}
-            align="left"
-          />
-        </Column>
-      </Row>
-      <Row backgroundColor={colors.bg} padding="6px 24px 40px">
-        <Column>
-          <Paragraph
-            fontSize={type.small.size}
-            lineHeight={type.small.line}
-            color={colors.warmGray}
-            text={`${brand.legalName} · ${brand.city} · ${brand.tagline}`}
-          />
-          <Paragraph
-            fontSize="11px"
-            lineHeight="16px"
-            color={colors.warmGray}
-            // inline-block padding rather than a stylesheet rule: this is the
-            // one lever that works in every client, and it lifts the legal
-            // links from a 13px line to a 44px thumb target.
-            html={`<a href="${links.unsubscribe}" style="display:inline-block;padding:14px 6px;color:${colors.warmGray};text-decoration:underline;">Unsubscribe</a>&nbsp;·&nbsp;<a href="${links.privacy}" style="display:inline-block;padding:14px 6px;color:${colors.warmGray};text-decoration:underline;">Privacy</a>&nbsp;·&nbsp;<a href="${links.terms}" style="display:inline-block;padding:14px 6px;color:${colors.warmGray};text-decoration:underline;">Terms</a>`}
-          />
-        </Column>
-      </Row>
+      {footerRows({ variant: "email" })}
     </Email>
   );
 }

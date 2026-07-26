@@ -6,7 +6,7 @@
  * breakpoint, tightened spacing on phones, interaction states, and the print
  * rules for the PDF itinerary.
  */
-import { colors, fonts, radius } from "./lib/theme";
+import { colors, fonts, radius, shadow } from "./lib/theme";
 
 /**
  * Web page stylesheet.
@@ -27,6 +27,19 @@ export const pageCss = `
     z-index: 50;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
     background: ${colors.white};
+  }
+
+  .wl-navlink:hover { color: ${colors.teal} !important; }
+
+  /* Cards in a row are all as tall as the tallest one, so the three journal
+     footers and the four team cards line up instead of ending raggedly. */
+  .wl-cards > div, .wl-facts > div { align-items: stretch !important; }
+  .wl-cards .u-col, .wl-facts .u-col { display: flex !important; }
+  .wl-cards .u-col > .v-col-padding, .wl-facts .u-col > .v-col-padding { width: 100%; }
+  .wl-journal { transition: border-color 180ms ease, box-shadow 180ms ease; }
+  .wl-journal:hover {
+    border-color: ${colors.teal};
+    box-shadow: ${shadow.ambient};
   }
 
   /* Interaction states. Hover darkens by one step, focus is always visible. */
@@ -170,7 +183,10 @@ export const documentCss = `
 
   /* Screen-only affordance so the file is useful before it becomes a PDF. */
   .wl-print-bar {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
     padding: 20px 16px;
     font-family: ${fonts.body};
   }
@@ -192,6 +208,16 @@ export const documentCss = `
   }
   .wl-print-btn:hover { background: ${colors.tealDeep}; }
   .wl-print-btn:focus-visible { outline: 2px solid ${colors.navy}; outline-offset: 3px; }
+
+  /* The download sits beside print as the quieter of the two: same shape,
+     outlined rather than filled, and it resolves to a real file. */
+  .wl-print-btn-ghost {
+    background: ${colors.white};
+    color: ${colors.teal};
+    border: 1px solid ${colors.teal};
+    text-decoration: none;
+  }
+  .wl-print-btn-ghost:hover { background: ${colors.tealLight}; color: ${colors.tealDeep}; }
 
   /* The sheet itself floats on the grey canvas on screen. */
   .wl-sheet {
@@ -249,7 +275,7 @@ export const documentCss = `
   }
 `;
 
-/** Screen-only print control prepended to the document body. */
+/** Screen-only controls prepended to the document body. */
 export const printBar = `
   <div class="wl-print-bar">
     <button class="wl-print-btn" type="button" onclick="window.print()">
@@ -261,5 +287,14 @@ export const printBar = `
       </svg>
       Print itinerary
     </button>
+    <a class="wl-print-btn wl-print-btn-ghost" href="itinerary.pdf" download="wanderlust-itinerary.pdf">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <path d="M7 10l5 5 5-5"/>
+        <path d="M12 15V3"/>
+      </svg>
+      Download PDF
+    </a>
   </div>
 `;

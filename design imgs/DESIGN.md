@@ -112,16 +112,16 @@ The brand personality is rooted in the concept of "Mindful Exploration." It brid
 The UI should evoke a sense of calm reliability. It is adventurous yet composed, avoiding cluttered layouts in favor of structured serenity. Visuals are crisp, utilizing light-weight borders and generous white space to allow high-quality travel photography to act as the primary window into the brand's world.
 
 ## Colors
-The palette is inspired by the deep horizons of the sea and the grounding tones of stone and earth. 
+The shipped palette is the warm one in `landingPage.png`: sun-bleached paper, deep forest shade and fired clay. It is inspired by the grounding tones of stone and earth rather than the sea. The values below are what `src/lib/theme.ts` exports (the token keys keep their historical `teal` / `navy` names).
 
-- **Primary Teal (#0D9488):** Represents the core brand identity—sophisticated and steady. Used for primary actions and active states.
-- **Deep Navy (#0F172A):** Provides weight and authority. Used for high-level headings and navigation backgrounds to create a sense of luxury.
-- **Warm Gray (#64748B):** Softens the interface, used for secondary text to reduce eye strain.
-- **Accent Coral (#E85D04):** A vibrant, high-energy hue reserved exclusively for high-conversion calls to action (CTAs) and urgent alerts.
-- **Surface & Background:** A clean hierarchy using White for interactive surfaces and Light Gray BG for the base canvas to define structural boundaries without heavy lines.
+- **Primary Terracotta (#C0623A):** The core brand identity—warm and steady. Used for primary actions, eyebrows and active states. Deepens to #A44F2C on hover.
+- **Deep Forest (#1F2A24):** Provides weight and authority. Used for high-level headings, dark bands and footer backgrounds to create a sense of luxury.
+- **Warm Stone (#7C7360):** Softens the interface, used for secondary text to reduce eye strain. Body copy sits one step darker at #5F5849.
+- **Clay Light (#F2E8DD):** A tinted surface for featured cards, badges and callout bands.
+- **Surface & Background:** Cream canvas (#F4EFE6) as Level 0 with paper surfaces (#FBF8F2) as Level 1, separated by a 1px warm border (#E3DACB) rather than heavy lines.
 
 ## Typography
-This design system utilizes **Inter** exclusively to achieve a systematic, utilitarian, and modern look. The typography relies on weight and casing rather than varying typefaces to maintain a cohesive, "Zen" discipline.
+The three deliverables (email, destination page, printed itinerary) use **Inter** exclusively to achieve a systematic, utilitarian, and modern look. The landing page adds **Playfair Display** for display headings only, matching the editorial hero in `landingPage.png`; body, labels and data stay on Inter and IBM Plex Mono. The typography relies on weight and casing rather than varying typefaces to maintain a cohesive, "Zen" discipline.
 
 - **Headlines:** H1 and H2 use tighter letter spacing for a more editorial, high-end appearance. 
 - **Eyebrows:** The `label-caps` style is used for category tags or section headers to provide clear hierarchy without taking up significant vertical space.

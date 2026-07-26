@@ -6,6 +6,7 @@
   "scripts": {
     "render": "tsx src/render.tsx",
     "build": "npm run render && node scripts/index-page.mjs",
+    "pdf": "node scripts/print-pdf.mjs",
     "preview": "node scripts/serve.mjs",
     "start": "npm run render && npm run preview",
     "typecheck": "tsc --noEmit"

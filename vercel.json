@@ -27,7 +27,5 @@
       ]
     }
   ],
-  "redirects": [
-    { "source": "/itinerary.pdf", "destination": "/itinerary", "permanent": false }
-  ]
+  "redirects": []
 }

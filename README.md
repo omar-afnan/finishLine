@@ -42,6 +42,7 @@ output/
 ├── email.txt                # renderToPlainText text/plain MIME part
 ├── page.html                # <Page>  responsive destination page
 ├── itinerary.html           # <Document>  print-ready itinerary
+├── itinerary.pdf            # the itinerary as a real PDF (npm run pdf)
 ├── email.design.json        # renderToJson  editor-compatible design JSON
 ├── page.design.json
 └── itinerary.design.json
@@ -54,7 +55,11 @@ npm run render
 start output/page.html
 ```
 
-`itinerary.html` carries a print bar  hit it (or ⌘/Ctrl-P) to export the PDF. Drop the `.design.json` files into the Unlayer visual editor to keep iterating there.
+`itinerary.html` carries a print bar: **Print itinerary** opens the browser dialog, **Download PDF** hands over a real file.
+
+That file comes from `npm run pdf`, which drives a local Chrome or Edge over `output/itinerary.html` and writes `assets/itinerary.pdf` (set `CHROME_PATH` if neither is in the usual place). It lands in `assets/` and is committed on purpose: the deploy host has no browser to generate it, so `npm run build` just copies it next to the HTML, the same way it copies the favicon. Re-run `npm run pdf` whenever the itinerary content changes.
+
+Drop the `.design.json` files into the Unlayer visual editor to keep iterating there.
 
 Type-check without emitting:
 
@@ -102,20 +107,22 @@ src/
 │   │                       #   pricing, inclusions, 6-day itinerary, policies, images
 │   ├── theme.ts            # Design tokens: colors, type scale, spacing, radius, shadow, fonts
 │   ├── icons.ts            # Inline SVG icon set (2px stroke, 24×24)  no emoji, no remote images
-│   └── tools.ts            # 15 custom Elements tools via registerTool, with per-mode exporters
+│   └── tools.ts            # 18 custom Elements tools via registerTool, with per-mode exporters
 └── templates/
     ├── BookingEmail.tsx        # <Email>  masthead, trip timeline, flights, hotel, price, CTAs
-    ├── DestinationPage.tsx     # <Page>  sticky nav, hero, quick facts, days, forecast, gallery
-    └── ItineraryDocument.tsx   # <Document> passenger record, flight table, day blocks, policies
+    ├── DestinationPage.tsx     # <Page>  sticky nav, hero, quick facts, days, forecast, about
+    ├── ItineraryDocument.tsx   # <Document> passenger record, flight table, day blocks, policies
+    └── SiteFooter.tsx          # One footer, three variants (web / email / print)
 
 scripts/
 ├── index-page.mjs          # The output/ front door. Imported by serve.mjs for the live
 │                           #   preview, run directly by the build to write index.html
+├── print-pdf.mjs           # Headless Chrome or Edge  itinerary.html to assets/itinerary.pdf
 └── serve.mjs               # Zero-dependency LAN static server for output/
 ```
 
 - **`lib/data.ts`**  one typed set of exports (`brand`, `booking`, `trip`, `flights`, `hotel`, `pricing`, `inclusions`, `itinerary`, `policies`, `essentials`, `forecast`, …) plus pre-shaped rows for the `<Table>` component. Every template imports from here; nothing is duplicated.
- **`lib/theme.ts`**  one visual language shared by all render modes: teal-on-navy palette, type scale, 4px spacing scale, radii, shadows, Inter + IBM Plex Mono via `renderToHtml`'s `fonts` option, and per-mode layout widths. No template hardcodes a hex or a font size.
+ **`lib/theme.ts`**  one visual language shared by all render modes: terracotta-on-forest palette, type scale, 4px spacing scale, radii, shadows, Inter + IBM Plex Mono via `renderToHtml`'s `fonts` option, and per-mode layout widths. No template hardcodes a hex or a font size.
  **`lib/icons.ts`**  inline SVG strings rather than components, because the custom tools build HTML strings and because email clients drop external images behind privacy proxies.
  **`lib/tools.ts`**  custom tools registered with the same config shape as the editor's `unlayer.registerTool`, so they're editor-ready.
  **`styles.ts`**  Elements only stacks columns below 480px, so this layers on a real 768px tablet breakpoint, phone spacing, hover states, and the print rules for the itinerary.
@@ -124,7 +131,7 @@ scripts/
 
 | Tool | Modes | What it does |
 |---|---|---|
-| `SectionLabel` | email · web | Uppercase teal eyebrow above each block |
+| `SectionLabel` | email · web | Uppercase terracotta eyebrow above each block |
 | `SplitRow` | email · web | Two items pushed to opposite edges inside one column |
 | `TripTimeline` | email · web | SFO → NRT → stay → NRT → SFO journey beads |
 | `IconTile` | email · web | One cell of the inclusions grid |
@@ -135,10 +142,13 @@ scripts/
 | `HeroBanner` | web | Full-bleed image with a bottom scrim — deliberately web-only |
 | `FactStat` | web | One cell of the quick facts bar |
 | `DayCard` | web | Vertical itinerary entry with a connecting rail |
-| `DayBlock` | web | Printed itinerary day: teal header bar plus activity rows |
+| `DayBlock` | web | Printed itinerary day: terracotta header bar plus activity rows |
 | `InfoCard` | web | One of the three essentials cards |
 | `ForecastStrip` | web | Seven-day outlook |
 | `PaidStamp` | web | Rotated coral "Paid in Full" stamp for the print sheet |
+| `JournalCard` | web | One story in the journal grid |
+| `TeamCard` | web | One person in the four-up about grid |
+| `QuoteCard` | web | The mission statement as a pull quote |
 
 Tools with both exporters emit **bulletproof nested tables with `bgcolor` fallbacks** for email and **clean flexbox divs** for web — one JSX call site, two correct outputs.
 

@@ -421,10 +421,14 @@ export const FactStat = registerTool({
   values: { icon: "calendar", label: "", value: "" },
   renderer: {
     exporters: {
+      // The tile is drawn here rather than on the wrapping Column: Elements
+      // columns sit flush against each other, so a column-level fill leaves
+      // four boxes touching. Padding on the column plus a card in here gives
+      // the row real gaps.
       web: (v) => `
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;background:${colors.bg};border:1px solid ${colors.border};border-radius:${radius.md};padding:16px 18px;height:100%;box-sizing:border-box;">
           <span style="line-height:0;flex:0 0 auto;">${icon(v.icon as IconName, colors.teal, 22)}</span>
-          <span>
+          <span style="min-width:0;">
             <span style="display:block;${labelStyle}color:${colors.warmGray};">${esc(v.label)}</span>
             <span style="display:block;${base}font-size:14px;line-height:20px;font-weight:600;color:${colors.navy};margin-top:2px;">${esc(v.value)}</span>
           </span>
@@ -475,10 +479,10 @@ export const CheckList = registerTool({
  * ------------------------------------------------------------------ */
 
 const typeTint: Record<string, { bg: string; fg: string }> = {
-  tour: { bg: "#EFF6FF", fg: "#1D4ED8" },
-  dining: { bg: "#FEF3E2", fg: "#B45309" },
+  tour: { bg: "#E9EFE7", fg: "#3F5A45" },
+  dining: { bg: "#F8ECDD", fg: "#A05A28" },
   transfer: { bg: colors.tealLight, fg: colors.teal },
-  free: { bg: "#F5F3FF", fg: "#6D28D9" },
+  free: { bg: "#F1EDE3", fg: "#6E6853" },
   flight: { bg: colors.tealLight, fg: colors.teal },
 };
 
@@ -644,16 +648,20 @@ export const JournalCard = registerTool({
         const tags = ((v.tags ?? []) as string[])
           .map(
             (t) =>
-              `<span style="background:${colors.tealLight};color:${colors.teal};border-radius:${radius.pill};padding:3px 10px;${labelStyle}">${esc(t)}</span>`
+              `<span style="background:${colors.tealLight};color:${colors.teal};border-radius:${radius.pill};padding:3px 10px;white-space:nowrap;${labelStyle}">${esc(t)}</span>`
           )
           .join("");
         // Column stretches its children, so the card is a flex column with the
         // meta row pushed to the bottom. That keeps the three cards' footers
         // aligned even when the excerpts differ in length.
+        //
+        // The tag row never wraps and the title reserves two lines: a card with
+        // one long tag pair used to push its own title a line lower than its
+        // neighbours', which read as three misaligned cards rather than a row.
         return `
-          <div style="${cardStyle}border-radius:${radius.lg};padding:26px 24px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">${tags}</div>
-            <div style="${base}font-size:${type.h3.size};line-height:${type.h3.line};font-weight:600;color:${colors.navy};">${esc(v.title)}</div>
+          <div class="wl-journal" style="${cardStyle}border-radius:${radius.lg};padding:26px 24px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;">
+            <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow:hidden;margin-bottom:14px;">${tags}</div>
+            <div style="${base}font-size:${type.h3.size};line-height:22px;font-weight:600;color:${colors.navy};min-height:44px;">${esc(v.title)}</div>
             <div style="${bodyStyle}margin-top:8px;">${esc(v.excerpt)}</div>
             <div style="margin-top:auto;">
               <div style="height:1px;background:${colors.hairline};margin:18px 0 12px;"></div>
@@ -709,6 +717,62 @@ export const TeamList = registerTool({
           .join("");
         return `<div style="${cardStyle}padding:6px 20px;">${rows}</div>`;
       },
+    },
+  },
+});
+
+/* ------------------------------------------------------------------ *
+ * TeamCard — one person, stacked, for the four-up about grid
+ *
+ * The about section used to run the team as a narrow list beside a tall
+ * column of values, which left a block of empty cream under it. Four equal
+ * cards across the full width read as a team and square the section off.
+ * ------------------------------------------------------------------ */
+
+export const TeamCard = registerTool({
+  name: "wl_team_card",
+  values: { name: "", role: "", origin: "" },
+  renderer: {
+    exporters: {
+      web: (v) => {
+        // Initials stand in for a headshot: no remote image to break.
+        const initials = String(v.name ?? "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((w) => w[0])
+          .join("")
+          .toUpperCase();
+        return `
+          <div style="${cardStyle}border-radius:${radius.lg};padding:22px 20px;height:100%;box-sizing:border-box;text-align:center;">
+            <span style="display:inline-flex;width:46px;height:46px;border-radius:50%;background:${colors.tealLight};color:${colors.teal};align-items:center;justify-content:center;${base}font-size:15px;font-weight:700;letter-spacing:0.5px;">${esc(initials)}</span>
+            <span style="display:block;${base}font-size:14px;line-height:20px;font-weight:600;color:${colors.navy};margin-top:12px;">${esc(v.name)}</span>
+            <span style="display:block;${base}font-size:13px;line-height:18px;color:${colors.teal};margin-top:2px;">${esc(v.role)}</span>
+            <span style="display:block;${smallStyle}margin-top:4px;">${esc(v.origin)}</span>
+          </div>`;
+      },
+    },
+  },
+});
+
+/* ------------------------------------------------------------------ *
+ * QuoteCard — the mission statement, set as a pull quote
+ * ------------------------------------------------------------------ */
+
+export const QuoteCard = registerTool({
+  name: "wl_quote_card",
+  values: { text: "", attribution: "" },
+  renderer: {
+    exporters: {
+      web: (v) => `
+        <div style="background:${colors.tealLight};border-radius:${radius.lg};padding:26px 28px;height:100%;box-sizing:border-box;">
+          <div style="${base}font-size:26px;line-height:26px;font-weight:700;color:${colors.teal};">&ldquo;</div>
+          <div style="${base}font-size:15px;line-height:24px;color:${colors.navy};margin-top:4px;">${esc(v.text)}</div>
+          ${v.attribution
+          ? `<div style="${labelStyle}color:${colors.teal};margin-top:16px;">${esc(v.attribution)}</div>`
+          : ""
+        }
+        </div>`,
     },
   },
 });
